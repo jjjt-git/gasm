@@ -1,0 +1,40 @@
+{
+	"version": <ISA-SPEC VERSION ID (currently: 10)>,
+	"formats": [
+		{
+			"name": "<ISA-UNIQUE CASE-INSENSITIVE FORMAT NAME>",
+			"fields": [
+				{
+					"from": <starting bit (in instruction)>,
+					"to": <ending bit (in instruction)>,
+					"variable": "<FORMAT-UNIQUE CASE-INSENSITIVE VARIABLE NAME>",
+					"isSlice": <boolean, has field only slice of variable?>,
+					"sliceFrom": <starting bit (only required for slices)>,
+					"sliceTo": <starting bit (only required for slices)>
+				}
+			]
+		}
+	],
+	"instructions": [
+		{
+			"name": "<CASE-INSENSITIVE INSTRUCTION NAME>",
+			"argNum": <NUMBER OF ARGUMENTS>,
+			"format": "<FORMAT NAME>",
+			"variables": [
+				{
+					"name": "<VARIABLE NAME>",
+					"value": "<INTEGER VALUE (for binary: prefix with b, for hexadecimal: prefix with x, for octal: prefix with o, defaults to decimal), get arguments with bash-syntax ($1, $2...)>",
+					"length": <length in bit of this variable>
+				}
+			]
+		}
+	],
+	"constants": [
+		{
+			"name": "<CASE-INSENSITIVE NAME>",
+			"value": "<PLAIN NUMBER VALUE (like variable), will be replaced in all occurences>",
+			"inDef": <boolean, replace in instruction-definitions?>,
+			"inCode": <boolean, replace in code?>
+		}
+	]
+}
