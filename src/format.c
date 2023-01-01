@@ -7,12 +7,15 @@
 #include<json-c/json_object.h>
 
 #include"errormsg.h"
+#include"strhelper.h"
 
 format_t* parseFormat(json_object* format) {
 	json_object* json_fields = json_object_object_get(format, "fields");
 	size_t numFields = json_object_array_length(json_fields);
 
 	const char* name = json_object_get_string(json_object_object_get(format, "name"));
+
+	str_tolower(name);
 
 	field_t** fields = malloc(sizeof(field_t) * numFields);
 	char** mapStrings = malloc(sizeof(char*) * numFields);
@@ -53,6 +56,8 @@ field_t* parseField(json_object* field, int* mapLength, char** mapStrings) {
 	int to = json_object_get_int(json_object_object_get(field, "to"));
 	const char* variableName = json_object_get_string(json_object_object_get(field, "variable"));
 	bool isSlice = json_object_get_boolean(json_object_object_get(field, "isSlice"));
+
+	str_tolower(variableName);
 
 	int sFrom = 0;
 
