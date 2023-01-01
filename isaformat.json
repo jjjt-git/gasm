@@ -5,12 +5,12 @@
 			"name": "<ISA-UNIQUE CASE-INSENSITIVE FORMAT NAME>",
 			"fields": [
 				{
-					"from": <starting bit (in instruction)>,
-					"to": <ending bit (in instruction)>,
+					"from": <starting bit (in instruction, lower boundary, included)>,
+					"to": <ending bit (in instruction, upper boundary, included)>,
 					"variable": "<FORMAT-UNIQUE CASE-INSENSITIVE VARIABLE NAME>",
 					"isSlice": <boolean, has field only slice of variable?>,
-					"sliceFrom": <starting bit (only required for slices)>,
-					"sliceTo": <starting bit (only required for slices)>
+					"sliceFrom": <starting bit (only required for slices, lower boundary, included)>,
+					"sliceTo": <starting bit (only required for slices, upper boundary, included)>
 				}
 			]
 		}

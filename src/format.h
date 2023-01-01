@@ -2,14 +2,14 @@
 #define FORMAT_H
 
 #include<stdbool.h>
-#include<stdarg.h>
 
 #include<json-c/json.h>
 
+#include"instruction.h"
+
 typedef struct {
-	unsigned int from, to, sliceFrom, sliceTo;
+	unsigned int from, to, sliceFrom;
 	int variable;
-	bool isSlice;
 } field_t;
 
 typedef struct {
@@ -17,12 +17,12 @@ typedef struct {
 	unsigned int numFields;
 	field_t** fields;
 	char** variables; // variable map (index -> var)
-	size_t variableNum;
+	unsigned int variableNum;
 } format_t;
 
 format_t* parseFormat(json_object* format);
 field_t* parseField(json_object* field, int* mapLength, char** mapStrings);
 
-int fillFormat(format_t *format, ...);
+instruction_bs_t fillFormat(format_t *format, int varv[]); // returns the bitstring
 
 #endif

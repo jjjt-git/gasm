@@ -55,7 +55,10 @@ field_t* parseField(json_object* field, int* mapLength, char** mapStrings) {
 	bool isSlice = json_object_get_boolean(json_object_object_get(field, "isSlice"));
 
 	int sFrom = 0;
-	int sTo = 0;
+
+	if (isSlice) {
+		sFrom = json_object_get_int(json_object_object_get(field, "sliceFrom"));
+	}
 
 	int varMapNum = -1;
 	for (int ii = 0; ii < *mapLength; ii++) {
@@ -79,9 +82,25 @@ field_t* parseField(json_object* field, int* mapLength, char** mapStrings) {
 	res->from = from;
 	res->to = to;
 	res->sliceFrom = sFrom;
-	res->sliceTo = sTo;
-	res->isSlice = isSlice;
 	res->variable = varMapNum;
 
-	return NULL;
+	return res;
+}
+
+instruction_bs_t fillFormat(format_t *format, int vars[]) {
+	instruction_bs_t res = 0;
+
+	for (unsigned int ii = 0; ii < format->numFields; ii++) {
+		field_t* field = format->fields[ii];
+		instruction_bs_t iMask = 0;
+		for (unsigned int maskMaker = field->from; maskMaker <= field->to; maskMaker++) {
+			iMask = iMask | (1 << maskMaker);
+		}
+
+		instruction_bs_t data = vars[field->variable] << (field->from - field->sliceFrom);
+
+		res = res | (iMask & data);
+	}
+
+	return res;
 }
