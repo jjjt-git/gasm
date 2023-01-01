@@ -16,9 +16,8 @@ format_t* parseFormat(json_object* format) {
 
 	field_t** fields = malloc(sizeof(field_t) * numFields);
 	char** mapStrings = malloc(sizeof(char*) * numFields);
-	int* mapValues = malloc(sizeof(int) * numFields);
 
-	if (mapStrings == NULL || mapValues == NULL || fields == NULL) {
+	if (mapStrings == NULL || fields == NULL) {
 		ERR_ALLOC(__FILE__, __LINE__);
 	}
 
@@ -26,14 +25,13 @@ format_t* parseFormat(json_object* format) {
 
 	for (unsigned int ii = 0; ii <= numFields; ii++) {
 		fields[ii] = parseField(json_object_array_get_idx(json_fields, ii),
-				&mapLength, mapStrings, mapValues);
+				&mapLength, mapStrings);
 	}
 
 	mapStrings = realloc(mapStrings, sizeof(char*) * mapLength);
-	mapValues = realloc(mapValues, sizeof(int) * mapLength);
 	format_t* res = malloc(sizeof(format_t));
 
-	if (mapStrings == NULL || mapValues == NULL || res == NULL) {
+	if (mapStrings == NULL || res == NULL) {
 		ERR_ALLOC(__FILE__, __LINE__);
 	}
 
@@ -46,7 +44,44 @@ format_t* parseFormat(json_object* format) {
 
 	res->fields = fields;
 	res->variables = mapStrings;
-	res->nums = mapValues;
 
 	return res;
+}
+
+field_t* parseField(json_object* field, int* mapLength, char** mapStrings) {
+	int from = json_object_get_int(json_object_object_get(field, "from"));
+	int to = json_object_get_int(json_object_object_get(field, "to"));
+	const char* variableName = json_object_get_string(json_object_object_get(field, "variable"));
+	bool isSlice = json_object_get_boolean(json_object_object_get(field, "isSlice"));
+
+	int sFrom = 0;
+	int sTo = 0;
+
+	int varMapNum = -1;
+	for (int ii = 0; ii < *mapLength; ii++) {
+		if (strcmp(variableName, mapStrings[ii]) == 0) {
+			varMapNum = ii;
+			break;
+		}
+	}
+
+	if (varMapNum == -1) {
+		mapStrings[*mapLength] = variableName;
+		varMapNum = *mapLength;
+		(*mapLength)++;
+	}
+
+	field_t* res = malloc(sizeof(field_t));
+	if (res == NULL) {
+		ERR_ALLOC(__FILE__,__LINE__);
+	}
+
+	res->from = from;
+	res->to = to;
+	res->sliceFrom = sFrom;
+	res->sliceTo = sTo;
+	res->isSlice = isSlice;
+	res->variable = varMapNum;
+
+	return NULL;
 }

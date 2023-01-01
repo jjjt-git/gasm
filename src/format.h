@@ -16,13 +16,12 @@ typedef struct {
 	char* name;
 	unsigned int numFields;
 	field_t** fields;
-	char** variables; // variable map
-	int* nums; // variable map
+	char** variables; // variable map (index -> var)
 	size_t variableNum;
 } format_t;
 
 format_t* parseFormat(json_object* format);
-field_t* parseField(json_object* field, int* mapLength, char** mapStrings, int* mapValues);
+field_t* parseField(json_object* field, int* mapLength, char** mapStrings);
 
 int fillFormat(format_t *format, ...);
 

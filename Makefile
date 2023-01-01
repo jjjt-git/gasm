@@ -24,7 +24,7 @@ ONDEMAND	:=
 DEBUGFLAGS	:= -g3
 INCLUDES	:=
 LINKS		:= json-c
-CFLAGS		:= $(DEBUGFLAGS) -flto -Wall -Wextra -Werror -g -O2 -fPIC -fvisibility=hidden
+CFLAGS		:= $(DEBUGFLAGS) -flto -Wall -Wextra -Werror -g -O2 -fPIC -fvisibility=hidden -Wno-error=discarded-qualifiers
 LDFLAGS		:=
 MEMTESTOPTS	:= --tool=memcheck --leak-check=yes
 STRIPOPTS	:= --strip-unneeded
