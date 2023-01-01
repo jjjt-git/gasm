@@ -9,6 +9,47 @@
 #include"errormsg.h"
 #include"strhelper.h"
 
+static inline field_t* parseField(json_object* field, int* mapLength, char** mapStrings) {
+	int from = json_object_get_int(json_object_object_get(field, "from"));
+	int to = json_object_get_int(json_object_object_get(field, "to"));
+	const char* variableName = json_object_get_string(json_object_object_get(field, "variable"));
+	bool isSlice = json_object_get_boolean(json_object_object_get(field, "isSlice"));
+
+	str_tolower(variableName);
+
+	int sFrom = 0;
+
+	if (isSlice) {
+		sFrom = json_object_get_int(json_object_object_get(field, "sliceFrom"));
+	}
+
+	int varMapNum = -1;
+	for (int ii = 0; ii < *mapLength; ii++) {
+		if (strcmp(variableName, mapStrings[ii]) == 0) {
+			varMapNum = ii;
+			break;
+		}
+	}
+
+	if (varMapNum == -1) {
+		mapStrings[*mapLength] = variableName;
+		varMapNum = *mapLength;
+		(*mapLength)++;
+	}
+
+	field_t* res = malloc(sizeof(field_t));
+	if (res == NULL) {
+		ERR_ALLOC(__FILE__,__LINE__);
+	}
+
+	res->from = from;
+	res->to = to;
+	res->sliceFrom = sFrom;
+	res->variable = varMapNum;
+
+	return res;
+}
+
 format_t* parseFormat(json_object* format) {
 	json_object* json_fields = json_object_object_get(format, "fields");
 	size_t numFields = json_object_array_length(json_fields);
@@ -47,47 +88,6 @@ format_t* parseFormat(json_object* format) {
 
 	res->fields = fields;
 	res->variables = mapStrings;
-
-	return res;
-}
-
-field_t* parseField(json_object* field, int* mapLength, char** mapStrings) {
-	int from = json_object_get_int(json_object_object_get(field, "from"));
-	int to = json_object_get_int(json_object_object_get(field, "to"));
-	const char* variableName = json_object_get_string(json_object_object_get(field, "variable"));
-	bool isSlice = json_object_get_boolean(json_object_object_get(field, "isSlice"));
-
-	str_tolower(variableName);
-
-	int sFrom = 0;
-
-	if (isSlice) {
-		sFrom = json_object_get_int(json_object_object_get(field, "sliceFrom"));
-	}
-
-	int varMapNum = -1;
-	for (int ii = 0; ii < *mapLength; ii++) {
-		if (strcmp(variableName, mapStrings[ii]) == 0) {
-			varMapNum = ii;
-			break;
-		}
-	}
-
-	if (varMapNum == -1) {
-		mapStrings[*mapLength] = variableName;
-		varMapNum = *mapLength;
-		(*mapLength)++;
-	}
-
-	field_t* res = malloc(sizeof(field_t));
-	if (res == NULL) {
-		ERR_ALLOC(__FILE__,__LINE__);
-	}
-
-	res->from = from;
-	res->to = to;
-	res->sliceFrom = sFrom;
-	res->variable = varMapNum;
 
 	return res;
 }

@@ -7,6 +7,7 @@
 #include"errormsg.h"
 #include"instruction.h"
 #include"strhelper.h"
+#include"values.h"
 
 struct __constants_t {
 	char* name;
@@ -71,17 +72,7 @@ void parseConstants(json_object* constants, constants_t* spec, constants_t* code
 		str_tolower(name);
 		str_tolower(valueS);
 
-		instruction_bs_t value;
-
-		if (valueS[0] == 'x') {
-			value = strtol(valueS + 1, NULL, 16);
-		} else if (valueS[0] == 'b') {
-			value = strtol(valueS + 1, NULL, 2);
-		} else if (valueS[0] == 'o') {
-			value = strtol(valueS + 1, NULL, 8);
-		} else {
-			value = strtol(valueS, NULL, 10);
-		}
+		instruction_bs_t value = getValue(valueS, NULL);
 
 		if (json_object_get_boolean(json_object_object_get(cur, "inSpec"))) {
 			insert(spec, name, value);
@@ -105,4 +96,17 @@ instruction_bs_t getConstValue(constants_t *constants, const char *name) {
 			return constants->value;
 		}
 	}
+}
+
+bool hasConstant(constants_t *constants, const char  *name) {
+	while (constants != NULL) {
+		if (strcmp(name, constants->name) < 0) { // left
+			constants = constants->left;
+		} else if (strcmp(name, constants->name) > 0) { // right
+			constants = constants->right;
+		} else { // found
+			return true;
+		}
+	}
+	return false;
 }

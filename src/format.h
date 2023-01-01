@@ -21,7 +21,6 @@ typedef struct {
 } format_t;
 
 format_t* parseFormat(json_object* format);
-field_t* parseField(json_object* field, int* mapLength, char** mapStrings);
 
 instruction_bs_t fillFormat(format_t *format, int varv[]); // returns the bitstring
 
