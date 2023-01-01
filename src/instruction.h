@@ -21,6 +21,9 @@ typedef struct {
 	variable_t** vars;
 } instruction_t;
 
-instruction_t* parseInstructionSpec(json_object* instruction, constants_t* constants);
+typedef struct __instructions_t instructions_t;
+
+instructions_t* parseInstructionSpecs(json_object* instruction, constants_t* constants);
+instruction_t* getInstructionSpec(instructions_t* formats, const char* name);
 
 #endif

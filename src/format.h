@@ -20,8 +20,12 @@ typedef struct {
 	unsigned int variableNum;
 } format_t;
 
-format_t* parseFormat(json_object* format);
+typedef struct __formats_t formats_t;
+
+formats_t* parseFormats(json_object* formats);
 
 instruction_bs_t fillFormat(format_t *format, int varv[]); // returns the bitstring
+
+format_t* getFormat(formats_t* formats, const char* name);
 
 #endif

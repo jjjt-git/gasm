@@ -30,7 +30,7 @@ constants_t* newConstants() {
 	return res;
 }
 
-static void insert(constants_t* constants, const char* name, instruction_bs_t value) {
+static inline void insert(constants_t* constants, const char* name, instruction_bs_t value) {
 	if (constants->name == NULL) {
 		constants->name = name;
 		constants->value = value;

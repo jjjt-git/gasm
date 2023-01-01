@@ -3,10 +3,18 @@
 #include<stdlib.h>
 #include<json-c/json.h>
 #include<stdbool.h>
+#include<string.h>
 
 #include"errormsg.h"
 #include"strhelper.h"
 #include"values.h"
+
+struct __instructions_t {
+	char* name;
+	instruction_t* content;
+	struct __instructions_t* left;
+	struct __instructions_t* right;
+};
 
 static inline variable_t* parseInstructionVariable(json_object *var, constants_t *constants) {
 	variable_t* res = malloc(sizeof(variable_t));
@@ -31,7 +39,7 @@ static inline variable_t* parseInstructionVariable(json_object *var, constants_t
 	return res;
 }
 
-instruction_t* parseInstructionSpec(json_object* instruction, constants_t* constants) {
+static inline instruction_t* parseInstructionSpec(json_object* instruction, constants_t* constants) {
 	instruction_t* res = malloc(sizeof(instruction_t));
 	if (res == NULL) {
 		ERR_ALLOC(__FILE__,__LINE__);
@@ -54,4 +62,81 @@ instruction_t* parseInstructionSpec(json_object* instruction, constants_t* const
 	}
 
 	return res;
+}
+
+static inline instructions_t* newNode() {
+	instructions_t* res = malloc(sizeof(instructions_t));
+
+	if (res == NULL) {
+		ERR_ALLOC(__FILE__,__LINE__);
+	}
+
+	res->name = NULL;
+	res->content = NULL;
+	res->left = NULL;
+	res->right = NULL;
+
+	return res;
+}
+
+static inline void insert(instructions_t* tree, instruction_t* data) {
+	char* name = data->name;
+	if (tree->name == NULL) {
+		tree->name = name;
+		tree->content = data;
+		return;
+	}
+
+	while (1) {
+		if (strcmp(name, tree->name) < 0) { // left
+			if (tree->left == NULL) {
+				tree->left = newNode();
+				tree = tree->left;
+				break;
+			}
+			tree = tree->left;
+		} else if (strcmp(name, tree->name) > 0) { // right
+			if (tree->right == NULL) {
+				tree->right = newNode();
+				tree = tree->right;
+				break;
+			}
+			tree = tree->right;
+		} else {
+			ERR_CFG("Multiple definition of instruction!");
+		}
+	}
+
+	tree->name = name;
+	tree->content = data;
+}
+
+instructions_t* parseInstructionSpecs(json_object* instructions, constants_t* constants) {
+	size_t numInst = json_object_array_length(instructions);
+
+	instructions_t* res = newNode();
+
+	for (unsigned int ii = 0; ii < numInst; ii++) {
+		json_object* cur = json_object_array_get_idx(instructions, ii);
+
+		instruction_t* ff = parseInstructionSpec(cur, constants);
+		insert(res, ff);
+	}
+
+	return res;
+}
+
+instruction_t* getInstructionSpec(instructions_t *instructions, const char *name) {
+	while (1) {
+		if (instructions == NULL) {
+			ERR_CFG("instructions does not exist!");
+		}
+		if (strcmp(name, instructions->name) < 0) { // left
+			instructions = instructions->left;
+		} else if (strcmp(name, instructions->name) > 0) { // right
+			instructions = instructions->right;
+		} else { // found
+			return instructions->content;
+		}
+	}
 }

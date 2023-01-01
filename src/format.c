@@ -9,6 +9,13 @@
 #include"errormsg.h"
 #include"strhelper.h"
 
+struct __formats_t {
+	char* name;
+	format_t* content;
+	struct __formats_t* left;
+	struct __formats_t* right;
+};
+
 static inline field_t* parseField(json_object* field, int* mapLength, char** mapStrings) {
 	int from = json_object_get_int(json_object_object_get(field, "from"));
 	int to = json_object_get_int(json_object_object_get(field, "to"));
@@ -50,7 +57,7 @@ static inline field_t* parseField(json_object* field, int* mapLength, char** map
 	return res;
 }
 
-format_t* parseFormat(json_object* format) {
+static inline format_t* parseFormat(json_object* format) {
 	json_object* json_fields = json_object_object_get(format, "fields");
 	size_t numFields = json_object_array_length(json_fields);
 
@@ -108,4 +115,81 @@ instruction_bs_t fillFormat(format_t *format, int vars[]) {
 	}
 
 	return res;
+}
+
+static inline formats_t* newNode() {
+	formats_t* res = malloc(sizeof(formats_t));
+
+	if (res == NULL) {
+		ERR_ALLOC(__FILE__,__LINE__);
+	}
+
+	res->name = NULL;
+	res->content = NULL;
+	res->left = NULL;
+	res->right = NULL;
+
+	return res;
+}
+
+static inline void insert(formats_t* tree, format_t* data) {
+	char* name = data->name;
+	if (tree->name == NULL) {
+		tree->name = name;
+		tree->content = data;
+		return;
+	}
+
+	while (1) {
+		if (strcmp(name, tree->name) < 0) { // left
+			if (tree->left == NULL) {
+				tree->left = newNode();
+				tree = tree->left;
+				break;
+			}
+			tree = tree->left;
+		} else if (strcmp(name, tree->name) > 0) { // right
+			if (tree->right == NULL) {
+				tree->right = newNode();
+				tree = tree->right;
+				break;
+			}
+			tree = tree->right;
+		} else {
+			ERR_CFG("Multiple definition of format!");
+		}
+	}
+
+	tree->name = name;
+	tree->content = data;
+}
+
+formats_t* parseFormats(json_object* formats) {
+	size_t numFormats = json_object_array_length(formats);
+
+	formats_t* res = newNode();
+
+	for (unsigned int ii = 0; ii < numFormats; ii++) {
+		json_object* cur = json_object_array_get_idx(formats, ii);
+
+		format_t* ff = parseFormat(cur);
+		insert(res, ff);
+	}
+
+	return res;
+}
+
+format_t* getFormat(formats_t *formats, const char *name) {
+	while (1) {
+		if (formats == NULL) {
+			ERR_CFG("Format does not exist!");
+		}
+		if (strcmp(name, formats->name) < 0) { // left
+			formats = formats->left;
+		} else if (strcmp(name, formats->name) > 0) { // right
+			formats = formats->right;
+		} else { // found
+			return formats->content;
+		}
+	}
 }
