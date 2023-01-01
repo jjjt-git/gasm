@@ -1,0 +1,90 @@
+{
+	"version": "1.0",
+	"formats": [
+		{
+			"name": "i",
+			"fields": [
+				{
+					"from": 20,
+					"to": 31,
+					"variable": "imm",
+					"isSlice": true,
+					"sliceFrom": 0,
+					"sliceTo": 11
+				},
+				{
+					"from": 15,
+					"to": 19,
+					"variable": "rs1",
+					"isSlice": false
+				},
+				{
+					"from": 12,
+					"to": 14,
+					"variable": "funct3",
+					"isSlice": false
+				},
+				{
+					"from": 7,
+					"to": 11,
+					"variable": "rd",
+					"isSlice": false
+				},
+				{
+					"from": 0,
+					"to": 6,
+					"variable": "opcode",
+					"isSlice": false
+				}
+			]
+		}
+	],
+	"instructions": [
+		{
+			"name": "addi",
+			"argNum": 3,
+			"format": "i",
+			"variables": [
+				{
+					"name": "imm",
+					"value": "$2",
+					"length": 31
+				},
+				{
+					"name": "rs1",
+					"value": "$1",
+					"length": 5
+				},
+				{
+					"name": "rd",
+					"value": "$0",
+					"length": 5
+				},
+				{
+					"name": "funct3",
+					"value": "b000",
+					"length": 3
+				},
+				{
+					"name": "opcode",
+					"value": "b0010011",
+					"length": 7
+				}
+			]
+		}
+	],
+	"constants": [
+		{
+			"name": "x0",
+			"value": "0",
+			"inSpec": false,
+			"inCode": true
+		},
+		{
+			"name": "x1",
+			"value": "1",
+			"inSpec": false,
+			"inCode": true
+		}
+	]
+}

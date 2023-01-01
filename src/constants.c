@@ -99,7 +99,9 @@ instruction_bs_t getConstValue(constants_t *constants, const char *name) {
 }
 
 bool hasConstant(constants_t *constants, const char  *name) {
+	if (name == NULL) return false;
 	while (constants != NULL) {
+		if (constants->name == NULL) return false; // empty constants
 		if (strcmp(name, constants->name) < 0) { // left
 			constants = constants->left;
 		} else if (strcmp(name, constants->name) > 0) { // right

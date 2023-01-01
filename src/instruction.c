@@ -29,10 +29,10 @@ static inline variable_t* parseInstructionVariable(json_object *var, constants_t
 
 	char* value = json_object_get_string(json_object_object_get(var, "value"));
 	if (value[0] == '$') {
-		res->isArg = 0;
+		res->isArg = 1;
 		value++;
 	} else {
-		res->isArg = 1;
+		res->isArg = 0;
 	}
 	res->value = getValue(value, constants);
 

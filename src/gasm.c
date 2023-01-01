@@ -11,7 +11,7 @@
 #include"constants.h"
 
 int main(int argc, char* argv[]) {
-	if (argc != 3 && argc != 4) { // show help
+	if (argc != 3) { // show help
 		printf("Usage:\n\t%s <config.json> <source>\nOutput prints to stdout\n", argv[0]);
 		exit(EXIT_SUCCESS);
 	}

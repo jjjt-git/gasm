@@ -74,7 +74,7 @@ static inline format_t* parseFormat(json_object* format) {
 
 	int mapLength = 0;
 
-	for (unsigned int ii = 0; ii <= numFields; ii++) {
+	for (unsigned int ii = 0; ii < numFields; ii++) {
 		fields[ii] = parseField(json_object_array_get_idx(json_fields, ii),
 				&mapLength, mapStrings);
 	}
