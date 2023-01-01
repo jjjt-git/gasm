@@ -99,7 +99,7 @@ static inline format_t* parseFormat(json_object* format) {
 	return res;
 }
 
-instruction_bs_t fillFormat(format_t *format, int vars[]) {
+instruction_bs_t fillFormat(format_t *format, instruction_bs_t vars[]) {
 	instruction_bs_t res = 0;
 
 	for (unsigned int ii = 0; ii < format->numFields; ii++) {

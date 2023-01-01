@@ -23,7 +23,7 @@
 			"variables": [
 				{
 					"name": "<VARIABLE NAME>",
-					"value": "<INTEGER VALUE (for binary: prefix with b, for hexadecimal: prefix with x or 0x, for octal: prefix with o or 0, defaults to decimal), get arguments with bash-syntax ($1, $2...)>",
+					"value": "<INTEGER VALUE (for binary: prefix with b, for hexadecimal: prefix with x or 0x, for octal: prefix with o or 0, defaults to decimal), get arguments with bash-syntax ($0, $1...)>",
 					"length": <length in bit of this variable>
 				}
 			]
