@@ -2,4 +2,4 @@
 tags
 build
 gasm
-gasm.stripped
+gasm.*

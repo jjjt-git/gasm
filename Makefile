@@ -31,6 +31,7 @@ CFLAGS		:= $(DEBUGFLAGS) -flto -Wall -Wextra -Werror -g -O0 -fPIC -fvisibility=h
 LDFLAGS		:=
 MEMTESTOPTS	:= --tool=memcheck --leak-check=yes
 STRIPOPTS	:= --strip-unneeded
+ASANOPTS	:= -fsanitize=address
 
 # tool cmds
 RM		:= rm -rf
@@ -82,10 +83,11 @@ LINKS := $(addprefix -l,$(LINKS))
 
 # creates depfiles to be included
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
+DEPFLAGSASAN = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.asan.d
 DEPFLAGSSO = -E -M -MT $(@:$(DEPDIR)/%.d=$(BUILDDIR)/%.o) -MG -MP -MF $@
 
 # commands for build/link/strip
-BUILD = $(CC) $(DEPFLAGS) $(CFLAGS) $(INCLUDES) -c -o
+BUILD = $(CC) $(CFLAGS) $(INCLUDES) -c -o
 LINK := $(LD) $(CFLAGS) $(LDFLAGS) $(LINKS) -o
 STRIP := $(STRIPCMD) $(STRIPOPTS) -o
 
@@ -107,6 +109,9 @@ ifeq (strip $(ONDEMAND),)
 	OBJS := $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o,$(SRCS))
 	DEPS := $(patsubst $(SRCDIR)/%.c,$(DEPDIR)/%.d,$(SRCS))
 
+	OBJS_ASAN := $(patsubst %.o,%.asan.o,$(OBJS))
+	DEPS_ASAN := $(patsubst %.d,%.asan.d,$(DEPS))
+
 	DEPDIRS := $(sort $(dir $(DEPS)))
 	OBJDIRS := $(sort $(dir $(OBJS)))
 else
@@ -116,6 +121,9 @@ else
 	# generate list of objects and deps
 	OBJS = $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o,$(SRCS))
 	DEPS = $(patsubst $(SRCDIR)/%.c,$(DEPDIR)/%.d,$(SRCS))
+
+	OBJS_ASAN = $(patsubst %.o,%.asan.o,$(OBJS))
+	DEPS_ASAN = $(patsubst %.d,%.asan.d,$(DEPS))
 
 	DEPDIRS = $(sort $(dir $(DEPS)))
 	OBJDIRS = $(sort $(dir $(OBJS)))
@@ -151,9 +159,20 @@ $(TARGET).stripped: $(TARGET)
 	$(STRIP) $@ $<
 endif
 
+ifneq ($(strip $(ASANOPTS)),)
+$(OBJS_ASAN): $(BUILDDIR)/%.asan.o: $(SRCDIR)/%.c | $(OBJDIRS)
+$(OBJS_ASAN): $(BUILDDIR)/%.asan.o: $(SRCDIR)/%.c $(DEPDIR)/%.asan.d $(MAKEFILE) | $(DEPDIRS)
+	$(BUILD) $@ $(DEPFLAGSASAN) $(ASANOPTS) $<
+
+$(TARGET).asan: $(OBJS_ASAN)
+	@echo
+	@echo linking $@
+	$(LINK) $@ $(ASANOPTS) $^
+endif
+
 $(OBJS): $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIRS)
 $(OBJS): $(BUILDDIR)/%.o: $(SRCDIR)/%.c $(DEPDIR)/%.d $(MAKEFILE) | $(DEPDIRS)
-	$(BUILD) $@ $<
+	$(BUILD) $@ $(DEPFLAGS) $<
 
 GENDIRS = $(DEPDIRS) $(USRDIRS) $(OBJDIRS)
 
@@ -175,5 +194,5 @@ test-leak: $(TESTTARGET)
 	$(MEMTEST) ./$(LEAK_CMD) 2>&1 | less
 
 #deps
-$(DEPS):
-include $(DEPS)
+$(DEPS) $(DEPS_ASAN):
+include $(DEPS) $(DEPS_ASAN)
