@@ -15,6 +15,10 @@ instruction_bs_t getValue(const char* data, constants_t* constants) {
 			value = strtol(data + 1, NULL, 2);
 		} else if (data[0] == 'o') {
 			value = strtol(data + 1, NULL, 8);
+		} else if (data[0] == '-') {
+			value = strtol(data + 1, NULL, 10);
+			value = ~value;
+			++value;
 		} else {
 			value = strtol(data, NULL, 10);
 		}

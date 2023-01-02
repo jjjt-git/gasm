@@ -106,10 +106,14 @@ instruction_bs_t fillFormat(format_t *format, instruction_bs_t vars[]) {
 		field_t* field = format->fields[ii];
 		instruction_bs_t iMask = 0;
 		for (unsigned int maskMaker = field->from; maskMaker <= field->to; maskMaker++) {
-			iMask = iMask | (1 << maskMaker);
+			iMask = iMask | (1L << maskMaker);
 		}
 
-		instruction_bs_t data = vars[field->variable] << (field->from - field->sliceFrom);
+		instruction_bs_t data = vars[field->variable];
+		if (field->from > field->sliceFrom)
+			data = data << (field->from - field->sliceFrom);
+		else if (field->from < field->sliceFrom)
+			data = data >> (field->sliceFrom - field->from);
 
 		res = res | (iMask & data);
 	}
