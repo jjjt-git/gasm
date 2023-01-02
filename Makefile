@@ -9,6 +9,9 @@ TARGET		:= gasm
 # set name of test executeable executing ALL tests
 TESTTARGET	:= test.testexe
 
+# set cmd of leak-test executable
+LEAK_CMD	:= gasm rv32i_reducedSet.json example.i
+
 # dir config
 BUILDDIR	:= build
 SRCDIR		:= src
@@ -93,7 +96,8 @@ MKDEP = $(CC) $(DEPFLAGSSO) $(INCLUDES)
 MEMTEST := $(VALGRIND) $(MEMTESTOPTS)
 
 # cwd
-PROJECTROOT := $(dir $(abspath $(MAKEFILE_LIST)))
+MAKEFILE := $(abspath $(MAKEFILE_LIST))
+PROJECTROOT := $(dir $(MAKEFILE))
 
 ifeq (strip $(ONDEMAND),)
 	# list of sources
@@ -148,7 +152,7 @@ $(TARGET).stripped: $(TARGET)
 endif
 
 $(OBJS): $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIRS)
-$(OBJS): $(BUILDDIR)/%.o: $(SRCDIR)/%.c $(DEPDIR)/%.d | $(DEPDIRS)
+$(OBJS): $(BUILDDIR)/%.o: $(SRCDIR)/%.c $(DEPDIR)/%.d $(MAKEFILE) | $(DEPDIRS)
 	$(BUILD) $@ $<
 
 GENDIRS = $(DEPDIRS) $(USRDIRS) $(OBJDIRS)
@@ -168,7 +172,7 @@ $(TESTTARGET): $(call rwildcard,$(TESTDIR),*.c) $(OBJS)
 	$(CC) $(INCLUDES) $(DEBUGFLAGS) $(LINKS) -o $@ $^
 
 test-leak: $(TESTTARGET)
-	$(MEMTEST) ./test.testexe 2>&1 | less
+	$(MEMTEST) ./$(LEAK_CMD) 2>&1 | less
 
 #deps
 $(DEPS):

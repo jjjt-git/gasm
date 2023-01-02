@@ -15,4 +15,6 @@ void parseConstants(json_object* constants,
 instruction_bs_t getConstValue(constants_t* constants, const char* name);
 bool hasConstant(constants_t* constants, const char* name);
 
+void freeConstants(constants_t* constants);
+
 #endif

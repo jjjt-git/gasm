@@ -64,6 +64,7 @@ int main(int argc, char* argv[]) {
 		}
 		strcpy(name, dir);
 		strcat(name, "/");
+		free(dir);
 		strcat(name, argv[1]);
 
 		if (!access(name, F_OK|R_OK)) {
@@ -75,6 +76,8 @@ int main(int argc, char* argv[]) {
 		free(name);
 	}
 	json_object* config = json_object_from_file(config_file);
+	free(config_file);
+	free(config_path);
 
 	if (config == NULL) {
 		fprintf(stderr, "Error reading the config-file\n");
@@ -103,7 +106,11 @@ int main(int argc, char* argv[]) {
 	parseConstants(json_object_object_get(config, "constants"), spec_constants, code_constants);
 	instructions_t* instructions = parseInstructionSpecs(json_object_object_get(config, "instructions"),
 							     spec_constants);
+	freeConstants(spec_constants);
+
 	formats_t* formats = parseFormats(json_object_object_get(config, "formats"));
+
+	json_object_put(config);
 
 	unsigned int lineNum = 0;
 	char * line = NULL;
@@ -124,6 +131,10 @@ int main(int argc, char* argv[]) {
 			printf("%llX\n", code);
 		}
 	}
+
+	freeInstructions(instructions);
+	freeConstants(code_constants);
+	freeFormats(formats);
 
 	return 0;
 }

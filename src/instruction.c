@@ -8,6 +8,7 @@
 #include"errormsg.h"
 #include"strhelper.h"
 #include"values.h"
+#include"jsonhelper.h"
 
 struct __instructions_t {
 	char* name;
@@ -22,12 +23,13 @@ static inline variable_t* parseInstructionVariable(json_object *var, constants_t
 		ERR_ALLOC(__FILE__,__LINE__);
 	}
 
-	res->name = json_object_get_string(json_object_object_get(var, "name"));
+	res->name = JSON_READ_STRING(var, "name");
 	str_tolower(res->name);
 
-	res->length = json_object_get_int(json_object_object_get(var, "length"));
+	res->length = JSON_READ_INT(var, "length");
 
-	char* value = json_object_get_string(json_object_object_get(var, "value"));
+	char* origValue = JSON_READ_STRING(var, "value");
+	char* value = origValue;
 	if (value[0] == '$') {
 		res->isArg = 1;
 		value++;
@@ -35,6 +37,8 @@ static inline variable_t* parseInstructionVariable(json_object *var, constants_t
 		res->isArg = 0;
 	}
 	res->value = getValue(value, constants);
+
+	free(origValue);
 
 	return res;
 }
@@ -45,12 +49,12 @@ static inline instruction_t* parseInstructionSpec(json_object* instruction, cons
 		ERR_ALLOC(__FILE__,__LINE__);
 	}
 
-	res->name = json_object_get_string(json_object_object_get(instruction, "name"));
-	res->format = json_object_get_string(json_object_object_get(instruction, "format"));
+	res->name = JSON_READ_STRING(instruction, "name");
+	res->format = JSON_READ_STRING(instruction, "format");
 	str_tolower(res->name);
 	str_tolower(res->format);
 
-	res->argNum = json_object_get_int(json_object_object_get(instruction, "argNum"));
+	res->argNum = JSON_READ_INT(instruction, "argNum");
 
 	json_object* vars = json_object_object_get(instruction, "variables");
 	res->varNum = json_object_array_length(vars);
@@ -139,4 +143,24 @@ instruction_t* getInstructionSpec(instructions_t *instructions, const char *name
 			return instructions->content;
 		}
 	}
+}
+
+static inline void freeInstruction(instruction_t *i) {
+	if (i == NULL) return;
+	free(i->name);
+	free(i->format);
+	for (unsigned int ii = 0; ii < i->varNum; ii++) {
+		free(i->vars[ii]->name);
+		free(i->vars[ii]);
+	}
+	free(i->vars);
+	free(i);
+}
+
+void freeInstructions(instructions_t* instructions) {
+	if (instructions == NULL) return;
+	freeInstructions(instructions->left);
+	freeInstructions(instructions->right);
+	freeInstruction(instructions->content);
+	free(instructions);
 }

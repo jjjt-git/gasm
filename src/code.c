@@ -65,5 +65,11 @@ instruction_bs_t translateInstruction(const char* line,
 		}
 	}
 
-	return fillFormat(format, values);;
+	free(argv);
+
+	instruction_bs_t res = fillFormat(format, values);
+
+	free(values);
+
+	return res;
 }

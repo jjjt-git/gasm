@@ -28,4 +28,6 @@ instruction_bs_t fillFormat(format_t *format, instruction_bs_t varv[]); // retur
 
 format_t* getFormat(formats_t* formats, const char* name);
 
+void freeFormats(formats_t* formats);
+
 #endif

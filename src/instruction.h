@@ -26,4 +26,6 @@ typedef struct __instructions_t instructions_t;
 instructions_t* parseInstructionSpecs(json_object* instruction, constants_t* constants);
 instruction_t* getInstructionSpec(instructions_t* instructions, const char* name);
 
+void freeInstructions(instructions_t* instructions);
+
 #endif

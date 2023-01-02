@@ -8,6 +8,7 @@
 
 #include"errormsg.h"
 #include"strhelper.h"
+#include"jsonhelper.h"
 
 struct __formats_t {
 	char* name;
@@ -17,23 +18,24 @@ struct __formats_t {
 };
 
 static inline field_t* parseField(json_object* field, int* mapLength, char** mapStrings) {
-	int from = json_object_get_int(json_object_object_get(field, "from"));
-	int to = json_object_get_int(json_object_object_get(field, "to"));
-	const char* variableName = json_object_get_string(json_object_object_get(field, "variable"));
-	bool isSlice = json_object_get_boolean(json_object_object_get(field, "isSlice"));
+	int from = JSON_READ_INT(field, "from");
+	int to = JSON_READ_INT(field, "to");
+	const char* variableName = JSON_READ_STRING(field, "variable");
+	bool isSlice = JSON_READ_BOOL(field, "isSlice");
 
 	str_tolower(variableName);
 
 	int sFrom = 0;
 
 	if (isSlice) {
-		sFrom = json_object_get_int(json_object_object_get(field, "sliceFrom"));
+		sFrom = JSON_READ_INT(field, "sliceFrom");
 	}
 
 	int varMapNum = -1;
 	for (int ii = 0; ii < *mapLength; ii++) {
 		if (strcmp(variableName, mapStrings[ii]) == 0) {
 			varMapNum = ii;
+			free(variableName);
 			break;
 		}
 	}
@@ -61,7 +63,7 @@ static inline format_t* parseFormat(json_object* format) {
 	json_object* json_fields = json_object_object_get(format, "fields");
 	size_t numFields = json_object_array_length(json_fields);
 
-	const char* name = json_object_get_string(json_object_object_get(format, "name"));
+	const char* name = JSON_READ_STRING(format, "name");
 
 	str_tolower(name);
 
@@ -87,8 +89,7 @@ static inline format_t* parseFormat(json_object* format) {
 	}
 
 
-	res->name = malloc(sizeof(char) * (strlen(name) + 1));
-	strcpy(res->name, name);
+	res->name = name;
 
 	res->numFields = numFields;
 	res->variableNum = mapLength;
@@ -196,4 +197,28 @@ format_t* getFormat(formats_t *formats, const char *name) {
 			return formats->content;
 		}
 	}
+}
+
+static inline void freeFormat(format_t* f) {
+	if (f == NULL) return;
+	free(f->name);
+	for (unsigned int ii = 0; ii < f->numFields; ii++) {
+		free(f->fields[ii]);
+	}
+	free(f->fields);
+
+	for (unsigned int ii = 0; ii < f->variableNum; ii++) {
+		free(f->variables[ii]);
+	}
+	free(f->variables);
+
+	free(f);
+}
+
+void freeFormats(formats_t* f) {
+	if (f == NULL) return;
+	freeFormats(f->left);
+	freeFormats(f->right);
+	freeFormat(f->content);
+	free(f);
 }

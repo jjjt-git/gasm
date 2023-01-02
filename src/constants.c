@@ -8,6 +8,7 @@
 #include"instruction.h"
 #include"strhelper.h"
 #include"values.h"
+#include"jsonhelper.h"
 
 struct __constants_t {
 	char* name;
@@ -67,17 +68,18 @@ void parseConstants(json_object* constants, constants_t* spec, constants_t* code
 	for (unsigned int ii = 0; ii < numConstants; ii++) {
 		json_object* cur = json_object_array_get_idx(constants, ii);
 
-		char* name = json_object_get_string(json_object_object_get(cur, "name"));
-		char* valueS = json_object_get_string(json_object_object_get(cur, "value"));
+		char* name = JSON_READ_STRING(cur, "name");
+		char* valueS = JSON_READ_STRING(cur, "value");
 		str_tolower(name);
 		str_tolower(valueS);
 
 		instruction_bs_t value = getValue(valueS, NULL);
+		free(valueS);
 
-		if (json_object_get_boolean(json_object_object_get(cur, "inSpec"))) {
+		if (JSON_READ_BOOL(cur, "inSpec")) {
 			insert(spec, name, value);
 		}
-		if (json_object_get_boolean(json_object_object_get(cur, "inCode"))) {
+		if (JSON_READ_BOOL(cur, "inCode")) {
 			insert(code, name, value);
 		}
 	}
@@ -111,4 +113,12 @@ bool hasConstant(constants_t *constants, const char  *name) {
 		}
 	}
 	return false;
+}
+
+void freeConstants(constants_t* c) {
+	if (c == NULL) return;
+	free(c->name);
+	freeConstants(c->left);
+	freeConstants(c->right);
+	free(c);
 }
