@@ -23,7 +23,7 @@ ONDEMAND	:=
 # tool config
 DEBUGFLAGS	:= -g3
 INCLUDES	:=
-LINKS		:= json-c
+LINKS		:= json-c c
 CFLAGS		:= $(DEBUGFLAGS) -flto -Wall -Wextra -Werror -g -O0 -fPIC -fvisibility=hidden -Wno-error=discarded-qualifiers
 LDFLAGS		:=
 MEMTESTOPTS	:= --tool=memcheck --leak-check=yes
