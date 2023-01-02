@@ -2,40 +2,67 @@
 	"version": "1.0",
 	"formats": [
 		{
+			"name": "r",
+			"fields": [
+				{"from": 25,"to": 31,"variable": "funct7","isSlice": false},
+				{"from": 20,"to": 24,"variable": "rs2","isSlice": false},
+				{"from": 15,"to": 19,"variable": "rs1","isSlice": false},
+				{"from": 12,"to": 14,"variable": "funct3","isSlice": false},
+				{"from": 7,"to": 11,"variable": "rd","isSlice": false},
+				{"from": 0,"to": 6,"variable": "opcode","isSlice": false}
+			]
+		},
+		{
 			"name": "i",
 			"fields": [
-				{
-					"from": 20,
-					"to": 31,
-					"variable": "imm",
-					"isSlice": true,
-					"sliceFrom": 0,
-					"sliceTo": 11
-				},
-				{
-					"from": 15,
-					"to": 19,
-					"variable": "rs1",
-					"isSlice": false
-				},
-				{
-					"from": 12,
-					"to": 14,
-					"variable": "funct3",
-					"isSlice": false
-				},
-				{
-					"from": 7,
-					"to": 11,
-					"variable": "rd",
-					"isSlice": false
-				},
-				{
-					"from": 0,
-					"to": 6,
-					"variable": "opcode",
-					"isSlice": false
-				}
+				{"from": 20,"to": 31,"variable": "imm","isSlice": true,"sliceFrom": 0,"sliceTo": 11},
+				{"from": 15,"to": 19,"variable": "rs1","isSlice": false},
+				{"from": 12,"to": 14,"variable": "funct3","isSlice": false},
+				{"from": 7,"to": 11,"variable": "rd","isSlice": false},
+				{"from": 0,"to": 6,"variable": "opcode","isSlice": false}
+			]
+		},
+		{
+			"name": "s",
+			"fields": [
+				{"from": 25,"to": 31,"variable": "imm","isSlice": true,"sliceFrom": 5,"sliceTo": 11},
+				{"from": 20,"to": 24,"variable": "rs2","isSlice": false},
+				{"from": 15,"to": 19,"variable": "rs1","isSlice": false},
+				{"from": 12,"to": 14,"variable": "funct3","isSlice": false},
+				{"from": 7,"to": 11,"variable": "imm","isSlice": true,"sliceFrom": 0,"sliceTo": 4},
+				{"from": 0,"to": 6,"variable": "opcode","isSlice": false}
+			]
+		},
+		{
+			"name": "b",
+			"fields": [
+				{"from": 31,"to": 31,"variable": "imm","isSlice": true,"sliceFrom": 12,"sliceTo": 12},
+				{"from": 25,"to": 30,"variable": "imm","isSlice": true,"sliceFrom": 5,"sliceTo": 10},
+				{"from": 20,"to": 24,"variable": "rs2","isSlice": false},
+				{"from": 15,"to": 19,"variable": "rs1","isSlice": false},
+				{"from": 12,"to": 14,"variable": "funct3","isSlice": false},
+				{"from": 8,"to": 11,"variable": "imm","isSlice": true,"sliceFrom": 1,"sliceTo": 4},
+				{"from": 7,"to": 7,"variable": "imm","isSlice": true,"sliceFrom": 11,"sliceTo": 11},
+				{"from": 0,"to": 6,"variable": "opcode","isSlice": false}
+			]
+		},
+		{
+			"name": "u",
+			"fields": [
+				{"from": 12,"to": 31,"variable": "imm","isSlice": true,"sliceFrom": 12, "sliceTo": 31},
+				{"from": 7,"to": 11,"variable": "rd","isSlice": false},
+				{"from": 0,"to": 6,"variable": "opcode","isSlice": false}
+			]
+		},
+		{
+			"name": "j",
+			"fields": [
+				{"from": 31,"to": 31,"variable": "imm","isSlice": true,"sliceFrom": 20, "sliceTo": 20},
+				{"from": 21,"to": 30,"variable": "imm","isSlice": true,"sliceFrom": 1, "sliceTo": 10},
+				{"from": 20,"to": 20,"variable": "imm","isSlice": true,"sliceFrom": 11, "sliceTo": 11},
+				{"from": 12,"to": 19,"variable": "imm","isSlice": true,"sliceFrom": 12, "sliceTo": 19},
+				{"from": 7,"to": 11,"variable": "rd","isSlice": false},
+				{"from": 0,"to": 6,"variable": "opcode","isSlice": false}
 			]
 		}
 	],
@@ -45,46 +72,519 @@
 			"argNum": 3,
 			"format": "i",
 			"variables": [
-				{
-					"name": "imm",
-					"value": "$2",
-					"length": 31
-				},
-				{
-					"name": "rs1",
-					"value": "$1",
-					"length": 5
-				},
-				{
-					"name": "rd",
-					"value": "$0",
-					"length": 5
-				},
-				{
-					"name": "funct3",
-					"value": "b000",
-					"length": 3
-				},
-				{
-					"name": "opcode",
-					"value": "b0010011",
-					"length": 7
-				}
+				{"name": "imm","value": "$2","length": 31},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b000","length": 3},
+				{"name": "opcode","value": "op-imm","length": 7}
+			]
+		},
+		{
+			"name": "slti",
+			"argNum": 3,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "$2","length": 31},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b010","length": 3},
+				{"name": "opcode","value": "op-imm","length": 7}
+			]
+		},
+		{
+			"name": "sltiu",
+			"argNum": 3,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "$2","length": 31},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b011","length": 3},
+				{"name": "opcode","value": "op-imm","length": 7}
+			]
+		},
+		{
+			"name": "andi",
+			"argNum": 3,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "$2","length": 31},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b111","length": 3},
+				{"name": "opcode","value": "op-imm","length": 7}
+			]
+		},
+		{
+			"name": "ori",
+			"argNum": 3,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "$2","length": 31},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b110","length": 3},
+				{"name": "opcode","value": "op-imm","length": 7}
+			]
+		},
+		{
+			"name": "xori",
+			"argNum": 3,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "$2","length": 31},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b100","length": 3},
+				{"name": "opcode","value": "op-imm","length": 7}
+			]
+		},
+		{
+			"name": "slli",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b0000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b001","length": 3},
+				{"name": "opcode","value": "op-imm","length": 7}
+			]
+		},
+		{
+			"name": "srli",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b0000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b101","length": 3},
+				{"name": "opcode","value": "op-imm","length": 7}
+			]
+		},
+		{
+			"name": "srai",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b0100000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b101","length": 3},
+				{"name": "opcode","value": "op-imm","length": 7}
+			]
+		},
+		{
+			"name": "lui",
+			"argNum": 2,
+			"format": "u",
+			"variables": [
+				{"name": "imm","value": "$1","length": 20},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "opcode","value": "lui","length": 7}
+			]
+		},
+		{
+			"name": "auipc",
+			"argNum": 2,
+			"format": "u",
+			"variables": [
+				{"name": "imm","value": "$1","length": 20},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "opcode","value": "auipc","length": 7}
+			]
+		},
+		{
+			"name": "add",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b0000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b000","length": 3},
+				{"name": "opcode","value": "op","length": 7}
+			]
+		},
+		{
+			"name": "slt",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b0000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b010","length": 3},
+				{"name": "opcode","value": "op","length": 7}
+			]
+		},
+		{
+			"name": "sltu",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b0000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b011","length": 3},
+				{"name": "opcode","value": "op","length": 7}
+			]
+		},
+		{
+			"name": "and",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b0000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b111","length": 3},
+				{"name": "opcode","value": "op","length": 7}
+			]
+		},
+		{
+			"name": "or",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b0000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b110","length": 3},
+				{"name": "opcode","value": "op","length": 7}
+			]
+		},
+		{
+			"name": "xor",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b0000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b100","length": 3},
+				{"name": "opcode","value": "op","length": 7}
+			]
+		},
+		{
+			"name": "sll",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b0000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b001","length": 3},
+				{"name": "opcode","value": "op","length": 7}
+			]
+		},
+		{
+			"name": "srl",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b0000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b101","length": 3},
+				{"name": "opcode","value": "op","length": 7}
+			]
+		},
+		{
+			"name": "sub",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b1000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b000","length": 3},
+				{"name": "opcode","value": "op","length": 7}
+			]
+		},
+		{
+			"name": "sra",
+			"argNum": 3,
+			"format": "r",
+			"variables": [
+				{"name": "funct7","value": "b1000000","length": 7},
+				{"name": "rs2","value": "$2","length": 5},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b101","length": 3},
+				{"name": "opcode","value": "op","length": 7}
+			]
+		},
+		{
+			"name": "nop",
+			"argNum": 0,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "0","length": 31},
+				{"name": "rs1","value": "0","length": 5},
+				{"name": "rd","value": "0","length": 5},
+				{"name": "funct3","value": "b000","length": 3},
+				{"name": "opcode","value": "op-imm","length": 7}
+			]
+		},
+		{
+			"name": "jal",
+			"argNum": 2,
+			"format": "j",
+			"variables": [
+				{"name": "imm","value": "$1","length": 31},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "opcode","value": "jal","length": 7}
+			]
+		},
+		{
+			"name": "j",
+			"argNum": 1,
+			"format": "j",
+			"variables": [
+				{"name": "imm","value": "$0","length": 31},
+				{"name": "rd","value": "0","length": 5},
+				{"name": "opcode","value": "jal","length": 7}
+			]
+		},
+		{
+			"name": "jalr",
+			"argNum": 2,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "$2","length": 31},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "0","length": 3},
+				{"name": "opcode","value": "jalr","length": 7}
+			]
+		},
+		{
+			"name": "beq",
+			"argnum": 3,
+			"format": "b",
+			"variables": [
+				{"name": "imm","value": "$2","length": 13},
+				{"name": "rs2","value": "$1","length": 5},
+				{"name": "rs1","value": "$0","length": 5},
+				{"name": "funct3","value": "b000","length": 3},
+				{"name": "opcode","value": "branch","length": 7}
+			]
+		},
+		{
+			"name": "bne",
+			"argnum": 3,
+			"format": "b",
+			"variables": [
+				{"name": "imm","value": "$2","length": 13},
+				{"name": "rs2","value": "$1","length": 5},
+				{"name": "rs1","value": "$0","length": 5},
+				{"name": "funct3","value": "b001","length": 3},
+				{"name": "opcode","value": "branch","length": 7}
+			]
+		},
+		{
+			"name": "blt",
+			"argnum": 3,
+			"format": "b",
+			"variables": [
+				{"name": "imm","value": "$2","length": 13},
+				{"name": "rs2","value": "$1","length": 5},
+				{"name": "rs1","value": "$0","length": 5},
+				{"name": "funct3","value": "b100","length": 3},
+				{"name": "opcode","value": "branch","length": 7}
+			]
+		},
+		{
+			"name": "bltu",
+			"argnum": 3,
+			"format": "b",
+			"variables": [
+				{"name": "imm","value": "$2","length": 13},
+				{"name": "rs2","value": "$1","length": 5},
+				{"name": "rs1","value": "$0","length": 5},
+				{"name": "funct3","value": "b110","length": 3},
+				{"name": "opcode","value": "branch","length": 7}
+			]
+		},
+		{
+			"name": "bge",
+			"argnum": 3,
+			"format": "b",
+			"variables": [
+				{"name": "imm","value": "$2","length": 13},
+				{"name": "rs2","value": "$1","length": 5},
+				{"name": "rs1","value": "$0","length": 5},
+				{"name": "funct3","value": "b101","length": 3},
+				{"name": "opcode","value": "branch","length": 7}
+			]
+		},
+		{
+			"name": "bgeu",
+			"argnum": 3,
+			"format": "b",
+			"variables": [
+				{"name": "imm","value": "$2","length": 13},
+				{"name": "rs2","value": "$1","length": 5},
+				{"name": "rs1","value": "$0","length": 5},
+				{"name": "funct3","value": "b111","length": 3},
+				{"name": "opcode","value": "branch","length": 7}
+			]
+		},
+		{
+			"name": "lb",
+			"argnum": 3,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "$2","length": 12},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b000","length": 3},
+				{"name": "opcode","value": "load","length": 7}
+			]
+		},
+		{
+			"name": "lh",
+			"argnum": 3,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "$2","length": 12},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b001","length": 3},
+				{"name": "opcode","value": "load","length": 7}
+			]
+		},
+		{
+			"name": "lbu",
+			"argnum": 3,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "$2","length": 12},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b100","length": 3},
+				{"name": "opcode","value": "load","length": 7}
+			]
+		},
+		{
+			"name": "lhu",
+			"argnum": 3,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "$2","length": 12},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b101","length": 3},
+				{"name": "opcode","value": "load","length": 7}
+			]
+		},
+		{
+			"name": "lw",
+			"argnum": 3,
+			"format": "i",
+			"variables": [
+				{"name": "imm","value": "$2","length": 12},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rd","value": "$0","length": 5},
+				{"name": "funct3","value": "b010","length": 3},
+				{"name": "opcode","value": "load","length": 7}
+			]
+		},
+		{
+			"name": "sb",
+			"argnum": 3,
+			"format": "s",
+			"variables": [
+				{"name": "imm","value": "$2","length": 12},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rs2","value": "$0","length": 5},
+				{"name": "funct3","value": "b000","length": 3},
+				{"name": "opcode","value": "store","length": 7}
+			]
+		},
+		{
+			"name": "sh",
+			"argnum": 3,
+			"format": "s",
+			"variables": [
+				{"name": "imm","value": "$2","length": 12},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rs2","value": "$0","length": 5},
+				{"name": "funct3","value": "b001","length": 3},
+				{"name": "opcode","value": "store","length": 7}
+			]
+		},
+		{
+			"name": "sw",
+			"argnum": 3,
+			"format": "s",
+			"variables": [
+				{"name": "imm","value": "$2","length": 12},
+				{"name": "rs1","value": "$1","length": 5},
+				{"name": "rs2","value": "$0","length": 5},
+				{"name": "funct3","value": "b010","length": 3},
+				{"name": "opcode","value": "store","length": 7}
 			]
 		}
 	],
 	"constants": [
-		{
-			"name": "x0",
-			"value": "0",
-			"inSpec": false,
-			"inCode": true
-		},
-		{
-			"name": "x1",
-			"value": "1",
-			"inSpec": false,
-			"inCode": true
-		}
+		{"name":"x0","value":"0","inSpec":false,"inCode":true},
+		{"name":"x1","value":"1","inSpec":false,"inCode":true},
+		{"name":"x2","value":"2","inSpec":false,"inCode":true},
+		{"name":"x3","value":"3","inSpec":false,"inCode":true},
+		{"name":"x4","value":"4","inSpec":false,"inCode":true},
+		{"name":"x5","value":"5","inSpec":false,"inCode":true},
+		{"name":"x6","value":"6","inSpec":false,"inCode":true},
+		{"name":"x7","value":"7","inSpec":false,"inCode":true},
+		{"name":"x8","value":"8","inSpec":false,"inCode":true},
+		{"name":"x9","value":"9","inSpec":false,"inCode":true},
+		{"name":"x10","value":"10","inSpec":false,"inCode":true},
+		{"name":"x11","value":"11","inSpec":false,"inCode":true},
+		{"name":"x12","value":"12","inSpec":false,"inCode":true},
+		{"name":"x13","value":"13","inSpec":false,"inCode":true},
+		{"name":"x14","value":"14","inSpec":false,"inCode":true},
+		{"name":"x15","value":"15","inSpec":false,"inCode":true},
+		{"name":"x16","value":"16","inSpec":false,"inCode":true},
+		{"name":"x17","value":"17","inSpec":false,"inCode":true},
+		{"name":"x18","value":"18","inSpec":false,"inCode":true},
+		{"name":"x19","value":"19","inSpec":false,"inCode":true},
+		{"name":"x20","value":"20","inSpec":false,"inCode":true},
+		{"name":"x21","value":"21","inSpec":false,"inCode":true},
+		{"name":"x22","value":"22","inSpec":false,"inCode":true},
+		{"name":"x23","value":"23","inSpec":false,"inCode":true},
+		{"name":"x24","value":"24","inSpec":false,"inCode":true},
+		{"name":"x25","value":"25","inSpec":false,"inCode":true},
+		{"name":"x26","value":"26","inSpec":false,"inCode":true},
+		{"name":"x27","value":"27","inSpec":false,"inCode":true},
+		{"name":"x28","value":"28","inSpec":false,"inCode":true},
+		{"name":"x29","value":"29","inSpec":false,"inCode":true},
+		{"name":"x30","value":"30","inSpec":false,"inCode":true},
+		{"name":"x31","value":"31","inSpec":false,"inCode":true},
+
+		{"name":"load","value":"b0000011","inSpec":true,"inCode":false},
+		{"name":"store","value":"b0100011","inSpec":true,"inCode":false},
+		{"name":"branch","value":"b1100011","inSpec":true,"inCode":false},
+		{"name":"jalr","value":"b1100111","inSpec":true,"inCode":false},
+		{"name":"misc-mem","value":"b0001111","inSpec":true,"inCode":false},
+		{"name":"jal","value":"b1101111","inSpec":true,"inCode":false},
+		{"name":"op-imm","value":"b0010011","inSpec":true,"inCode":false},
+		{"name":"op","value":"b0110011","inSpec":true,"inCode":false},
+		{"name":"system","value":"b1110011","inSpec":true,"inCode":false},
+		{"name":"auipc","value":"b0010111","inSpec":true,"inCode":false},
+		{"name":"lui","value":"b0110111","inSpec":true,"inCode":false}
 	]
 }
