@@ -1,5 +1,6 @@
 {
-	"version": "1.0",
+	"version": "1.1",
+	"baseLength": 4,
 	"formats": [
 		{
 			"name": "r",
@@ -374,7 +375,7 @@
 		},
 		{
 			"name": "beq",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "b",
 			"variables": [
 				{"name": "imm","value": "$2","length": 13},
@@ -386,7 +387,7 @@
 		},
 		{
 			"name": "bne",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "b",
 			"variables": [
 				{"name": "imm","value": "$2","length": 13},
@@ -398,7 +399,7 @@
 		},
 		{
 			"name": "blt",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "b",
 			"variables": [
 				{"name": "imm","value": "$2","length": 13},
@@ -410,7 +411,7 @@
 		},
 		{
 			"name": "bltu",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "b",
 			"variables": [
 				{"name": "imm","value": "$2","length": 13},
@@ -422,7 +423,7 @@
 		},
 		{
 			"name": "bge",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "b",
 			"variables": [
 				{"name": "imm","value": "$2","length": 13},
@@ -434,7 +435,7 @@
 		},
 		{
 			"name": "bgeu",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "b",
 			"variables": [
 				{"name": "imm","value": "$2","length": 13},
@@ -446,7 +447,7 @@
 		},
 		{
 			"name": "lb",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "i",
 			"variables": [
 				{"name": "imm","value": "$2","length": 12},
@@ -458,7 +459,7 @@
 		},
 		{
 			"name": "lh",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "i",
 			"variables": [
 				{"name": "imm","value": "$2","length": 12},
@@ -470,7 +471,7 @@
 		},
 		{
 			"name": "lbu",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "i",
 			"variables": [
 				{"name": "imm","value": "$2","length": 12},
@@ -482,7 +483,7 @@
 		},
 		{
 			"name": "lhu",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "i",
 			"variables": [
 				{"name": "imm","value": "$2","length": 12},
@@ -494,7 +495,7 @@
 		},
 		{
 			"name": "lw",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "i",
 			"variables": [
 				{"name": "imm","value": "$2","length": 12},
@@ -506,7 +507,7 @@
 		},
 		{
 			"name": "sb",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "s",
 			"variables": [
 				{"name": "imm","value": "$2","length": 12},
@@ -518,7 +519,7 @@
 		},
 		{
 			"name": "sh",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "s",
 			"variables": [
 				{"name": "imm","value": "$2","length": 12},
@@ -530,7 +531,7 @@
 		},
 		{
 			"name": "sw",
-			"argnum": 3,
+			"argNum": 3,
 			"format": "s",
 			"variables": [
 				{"name": "imm","value": "$2","length": 12},

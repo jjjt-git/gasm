@@ -1,5 +1,5 @@
 {
-	"version": "<ISA-SPEC VERSION ID (currently: 1.0)>",
+	"version": "1.0",
 	"formats": [
 		{
 			"name": "<ISA-UNIQUE CASE-INSENSITIVE FORMAT NAME>",

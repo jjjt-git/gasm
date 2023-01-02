@@ -1,14 +1,15 @@
 #include<stdio.h>
-
-#include<stdio.h>
 #include<stdlib.h>
 #include<json-c/json.h>
 #include<string.h>
+#include<stdbool.h>
 
 #include"code.h"
 #include"instruction.h"
 #include"format.h"
 #include"constants.h"
+
+#define streq(str1, str2) (strcmp(str1, str2) == 0)
 
 int main(int argc, char* argv[]) {
 	if (argc != 3) { // show help
@@ -29,9 +30,20 @@ int main(int argc, char* argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	if (strcmp("1.0", json_object_get_string(json_object_object_get(config, "version"))) != 0) {
+	const char* version = json_object_get_string(json_object_object_get(config, "version"));
+
+	if (version[0] != '1' || version[1] != '.') {
 		fprintf(stderr, "Unsupported version\n");
 		exit(EXIT_FAILURE);
+	}
+
+	bool fixLen = false;
+	unsigned int instructionLen = 0;
+	instruction_bs_t instructionMask = -1;
+	if (streq(version, "1.1")) {
+		fixLen = true;
+		instructionLen = json_object_get_int(json_object_object_get(config, "baseLength"));
+		instructionMask = (1L << (instructionLen * 8)) - 1;
 	}
 
 	constants_t* spec_constants = newConstants();
@@ -54,7 +66,12 @@ int main(int argc, char* argv[]) {
 				formats,
 				++lineNum
 			);
-		printf("%llx\n", code);
+		if (fixLen) {
+			code = code & instructionMask;
+			printf("%0*llX\n", instructionLen * 2, code);
+		} else {
+			printf("%llX\n", code);
+		}
 	}
 
 	return 0;
