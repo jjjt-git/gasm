@@ -130,7 +130,7 @@ else
 endif
 
 # main (and default) build target
-all: $(TARGET)_BUILD
+all: $(TARGET)_BUILD $(TARGET).stripped $(TARGET).asan
 	@echo "################################################"
 	@echo reached target all
 
@@ -151,6 +151,8 @@ $(TARGET): $(OBJS)
 	@echo
 	@echo linking $@
 	$(LINK) $@ $^
+
+$(TARGET).stripped $(TARGET).asan:
 
 ifneq ($(strip $(STRIPOPTS)),)
 $(TARGET).stripped: $(TARGET)
