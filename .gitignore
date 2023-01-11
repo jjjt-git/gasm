@@ -3,3 +3,4 @@ tags
 build
 gasm
 gasm.*
+gmon.out

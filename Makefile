@@ -32,6 +32,7 @@ LDFLAGS		:=
 MEMTESTOPTS	:= --tool=memcheck --leak-check=yes
 STRIPOPTS	:= --strip-unneeded
 ASANOPTS	:= -fsanitize=address
+GPROFOPTS	:= -pg
 
 # tool cmds
 RM		:= rm -rf
@@ -84,6 +85,7 @@ LINKS := $(addprefix -l,$(LINKS))
 # creates depfiles to be included
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 DEPFLAGSASAN = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.asan.d
+DEPFLAGSGPROF = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.gprof.d
 DEPFLAGSSO = -E -M -MT $(@:$(DEPDIR)/%.d=$(BUILDDIR)/%.o) -MG -MP -MF $@
 
 # commands for build/link/strip
@@ -112,6 +114,9 @@ ifeq (strip $(ONDEMAND),)
 	OBJS_ASAN := $(patsubst %.o,%.asan.o,$(OBJS))
 	DEPS_ASAN := $(patsubst %.d,%.asan.d,$(DEPS))
 
+	OBJS_GPROF := $(patsubst %.o,%.gprof.o,$(OBJS))
+	DEPS_GPROF := $(patsubst %.d,%.gprof.d,$(DEPS))
+
 	DEPDIRS := $(sort $(dir $(DEPS)))
 	OBJDIRS := $(sort $(dir $(OBJS)))
 else
@@ -125,12 +130,15 @@ else
 	OBJS_ASAN = $(patsubst %.o,%.asan.o,$(OBJS))
 	DEPS_ASAN = $(patsubst %.d,%.asan.d,$(DEPS))
 
+	OBJS_GPROF = $(patsubst %.o,%.gprof.o,$(OBJS))
+	DEPS_GPROF = $(patsubst %.d,%.gprof.d,$(DEPS))
+
 	DEPDIRS = $(sort $(dir $(DEPS)))
 	OBJDIRS = $(sort $(dir $(OBJS)))
 endif
 
 # main (and default) build target
-all: $(TARGET)_BUILD $(TARGET).stripped $(TARGET).asan
+all: $(TARGET)_BUILD $(TARGET).stripped $(TARGET).asan $(TARGET).gprof
 	@echo "################################################"
 	@echo reached target all
 
@@ -152,7 +160,7 @@ $(TARGET): $(OBJS)
 	@echo linking $@
 	$(LINK) $@ $^
 
-$(TARGET).stripped $(TARGET).asan:
+$(TARGET).stripped $(TARGET).asan $(TARGET).gprof:
 
 ifneq ($(strip $(STRIPOPTS)),)
 $(TARGET).stripped: $(TARGET)
@@ -170,6 +178,17 @@ $(TARGET).asan: $(OBJS_ASAN)
 	@echo
 	@echo linking $@
 	$(LINK) $@ $(ASANOPTS) $^
+endif
+
+ifneq ($(strip $(GPROFOPTS)),)
+$(OBJS_GPROF): $(BUILDDIR)/%.gprof.o: $(SRCDIR)/%.c | $(OBJDIRS)
+$(OBJS_GPROF): $(BUILDDIR)/%.gprof.o: $(SRCDIR)/%.c $(DEPDIR)/%.gprof.d $(MAKEFILE) | $(DEPDIRS)
+	$(BUILD) $@ $(DEPFLAGSGPROF) $(GPROFOPTS) $<
+
+$(TARGET).gprof: $(OBJS_GPROF)
+	@echo
+	@echo linking $@
+	$(LINK) $@ $(GPROFOPTS) $^
 endif
 
 $(OBJS): $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIRS)
@@ -196,5 +215,5 @@ test-leak: $(TESTTARGET)
 	$(MEMTEST) ./$(LEAK_CMD) 2>&1 | less
 
 #deps
-$(DEPS) $(DEPS_ASAN):
-include $(DEPS) $(DEPS_ASAN)
+$(DEPS) $(DEPS_ASAN) $(DEPS_GPROF):
+include $(DEPS) $(DEPS_ASAN) $(DEPS_GPROF)
