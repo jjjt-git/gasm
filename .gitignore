@@ -1,6 +1,9 @@
 .deps
 tags
 build
+test.testexe
 gasm
 gasm.*
 gmon.out
+!*.c
+

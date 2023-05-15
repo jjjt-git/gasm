@@ -308,7 +308,7 @@
 			"argNum": 3,
 			"format": "r",
 			"variables": [
-				{"name": "funct7","value": "b1000000","length": 7},
+				{"name": "funct7","value": "b0100000","length": 7},
 				{"name": "rs2","value": "$2","length": 5},
 				{"name": "rs1","value": "$1","length": 5},
 				{"name": "rd","value": "$0","length": 5},
@@ -363,7 +363,7 @@
 		},
 		{
 			"name": "jalr",
-			"argNum": 2,
+			"argNum": 3,
 			"format": "i",
 			"variables": [
 				{"name": "imm","value": "$2","length": 31},
